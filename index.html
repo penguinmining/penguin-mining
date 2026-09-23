@@ -1188,6 +1188,9 @@ balance.textContent = mined.toFixed(6);
 
 },1000);
 
+if(window.Telegram && Telegram.WebApp){
+Telegram.WebApp.ready();
+}
 showMine();
 
 showNav();
