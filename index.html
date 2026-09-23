@@ -1191,6 +1191,8 @@ balance.textContent = mined.toFixed(6);
 if(window.Telegram && Telegram.WebApp){
 Telegram.WebApp.ready();
 }
+const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user || null;
+const telegramUserId = telegramUser?.id || null;
 showMine();
 
 showNav();
