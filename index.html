@@ -1454,26 +1454,125 @@ page.innerHTML = `
   </div>
 
   <div class="card">
+
     <div style="text-align:center;margin-bottom:18px;">
       <div style="font-size:14px;opacity:.7;">Presale Price</div>
-      <div style="font-size:28px;font-weight:bold;">$${PRESALE_PRICE.toFixed(2)}</div>
+      <div style="font-size:28px;font-weight:bold;">$0.01</div>
     </div>
+
+    <div style="
+      margin:18px 0;
+      padding:18px;
+      border-radius:18px;
+      background:linear-gradient(145deg,rgba(246,196,83,.10),rgba(20,20,20,.92));
+      border:1px solid rgba(246,196,83,.30);
+      box-shadow:0 8px 28px rgba(0,0,0,.28),inset 0 0 20px rgba(246,196,83,.04);
+    ">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:13px;opacity:.72;">Presale Goal</div>
+        <div style="font-size:13px;font-weight:800;color:#f6c453;">$250,000 USDT</div>
+      </div>
+
+      <div style="font-size:26px;font-weight:900;margin-bottom:12px;">
+        $50,000
+        <span style="font-size:13px;opacity:.55;font-weight:600;"> Initial Milestone</span>
+      </div>
+
+      <div style="
+        width:100%;
+        height:14px;
+        border-radius:999px;
+        overflow:hidden;
+        background:rgba(255,255,255,.07);
+        border:1px solid rgba(255,255,255,.08);
+        box-shadow:inset 0 2px 7px rgba(0,0,0,.55);
+      ">
+        <div style="
+          width:20%;
+          height:100%;
+          border-radius:999px;
+          background:linear-gradient(90deg,#d89b18 0%,#f6c453 45%,#39ff88 100%);
+          box-shadow:0 0 12px rgba(57,255,136,.55),0 0 22px rgba(246,196,83,.35);
+          position:relative;
+        ">
+          <div style="
+            position:absolute;
+            top:0;
+            left:-30%;
+            width:30%;
+            height:100%;
+            background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+            animation:presaleShine 2.2s linear infinite;
+          "></div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;margin-top:9px;font-size:12px;">
+        <span style="color:#39ff88;font-weight:800;">20% milestone</span>
+        <span style="opacity:.55;">$250K target</span>
+      </div>
+
+      <div style="
+        margin-top:14px;
+        padding-top:12px;
+        border-top:1px solid rgba(255,255,255,.07);
+        display:flex;
+        justify-content:space-between;
+        font-size:13px;
+      ">
+        <span style="opacity:.65;">Raised</span>
+        <strong>$0 USDT</strong>
+      </div>
+
+      <div style="margin-top:7px;font-size:11px;opacity:.48;text-align:center;">
+        Initial milestone: $50,000 • Final presale target: $250,000
+      </div>
+
+    </div>
+
+    <style>
+      @keyframes presaleShine {
+        0% { left:-30%; }
+        100% { left:130%; }
+      }
+    </style>
 
     <button id="connectWalletBtn" onclick="demoConnectWallet()" style="width:100%;margin-bottom:15px;padding:15px 18px;border-radius:14px;border:1px solid rgba(255,193,7,.35);background:linear-gradient(135deg,#f6c453,#d89b18);color:#111;font-size:16px;font-weight:800;letter-spacing:.3px;box-shadow:0 6px 20px rgba(246,196,83,.22);">
       <span style="font-size:19px;margin-right:8px;">◈</span> Connect Wallet
     </button>
 
-    <div style="margin-bottom:8px;font-size:14px;">USDT Amount</div>
+    <div style="margin-bottom:10px;font-size:14px;">Payment Method</div>
 
-    <input id="presaleAmount" type="number" min="50" step="1" value="50"
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+
+      <button id="payUsdtBtn" onclick="selectPresalePayment('USDT')"
+        style="flex:1;padding:13px;border-radius:14px;border:1px solid rgba(246,196,83,.55);background:linear-gradient(135deg,#f6c453,#d89b18);color:#111;font-weight:900;">
+        💵 USDT
+      </button>
+
+      <button id="payBnbBtn" onclick="selectPresalePayment('BNB')"
+        style="flex:1;padding:13px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.05);color:#fff;font-weight:800;">
+        🟡 BNB
+      </button>
+
+    </div>
+
+    <div style="margin-bottom:8px;font-size:14px;">Amount (USD)</div>
+
+    <input id="presaleAmount" type="number" min="10" step="1" value="10"
       oninput="updatePresaleAmount()"
-      placeholder="Minimum $50"
+      placeholder="Minimum $10"
       style="width:100%;box-sizing:border-box;">
+
+    <div id="bnbEstimate" style="display:none;margin-top:8px;text-align:center;font-size:12px;opacity:.65;">
+      BNB amount will be calculated using the live BNB/USD price.
+    </div>
 
     <div style="margin-top:12px;text-align:center;">
       <div style="font-size:13px;opacity:.7;">You receive</div>
       <div id="presalePngAmount" style="font-size:24px;font-weight:bold;margin-top:5px;">
-        5,000 PNG
+        1,000 PNG
       </div>
     </div>
 
@@ -1482,7 +1581,7 @@ page.innerHTML = `
     </button>
 
     <div style="text-align:center;margin-top:15px;font-size:12px;opacity:.55;">
-      DEMO — No real payment is processed
+      PRESALE UNDER MAINTENANCE
     </div>
   </div>
 </div>
@@ -1492,7 +1591,39 @@ updatePresaleAmount();
 }
 
 function demoConnectWallet(){
-alert("Demo wallet connected. Real wallet connection will be added later.");
+alert("Presale Coming Soon 🚀");
+}
+
+function selectPresalePayment(method){
+const usdtBtn = document.getElementById("payUsdtBtn");
+const bnbBtn = document.getElementById("payBnbBtn");
+const bnbEstimate = document.getElementById("bnbEstimate");
+
+if(!usdtBtn || !bnbBtn) return;
+
+if(method === "BNB"){
+  usdtBtn.style.background = "rgba(255,255,255,.05)";
+  usdtBtn.style.color = "#fff";
+  usdtBtn.style.border = "1px solid rgba(255,255,255,.10)";
+
+  bnbBtn.style.background = "linear-gradient(135deg,#f6c453,#d89b18)";
+  bnbBtn.style.color = "#111";
+  bnbBtn.style.border = "1px solid rgba(246,196,83,.55)";
+
+  if(bnbEstimate) bnbEstimate.style.display = "block";
+}else{
+  bnbBtn.style.background = "rgba(255,255,255,.05)";
+  bnbBtn.style.color = "#fff";
+  bnbBtn.style.border = "1px solid rgba(255,255,255,.10)";
+
+  usdtBtn.style.background = "linear-gradient(135deg,#f6c453,#d89b18)";
+  usdtBtn.style.color = "#111";
+  usdtBtn.style.border = "1px solid rgba(246,196,83,.55)";
+
+  if(bnbEstimate) bnbEstimate.style.display = "none";
+}
+
+window.presalePaymentMethod = method;
 }
 
 function updatePresaleAmount(){
@@ -1503,7 +1634,7 @@ if(!input || !output) return;
 
 let amount = Number(input.value) || 0;
 
-if(amount < 50) amount = 50;
+if(amount < 10) amount = 10;
 
 const png = amount / 0.01;
 
@@ -1514,8 +1645,8 @@ function demoBuyPenguin(){
 const input = document.getElementById("presaleAmount");
 const amount = Number(input?.value) || 0;
 
-if(amount < 50){
-alert("Minimum presale participation is $50.");
+if(amount < 10){
+alert("Minimum presale participation is $10.");
 return;
 }
 
