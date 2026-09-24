@@ -1330,6 +1330,104 @@ ${t("backToMiners")}
 }
 
 
+
+async function showCrypto(){
+  currentPage = "crypto";
+
+  const page = document.getElementById("app");
+
+  page.innerHTML = `
+    <div class="page">
+      <div class="header">
+        <div class="logo">₿</div>
+        <h1>Crypto</h1>
+        <div class="subtitle">Live cryptocurrency prices</div>
+      </div>
+
+      <div id="cryptoList" class="card">
+        <div style="text-align:center;padding:20px;">
+          Loading prices...
+        </div>
+      </div>
+    </div>
+  `;
+
+  try{
+    const response = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple,dogecoin,cardano,tron,avalanche-2&vs_currencies=usd"
+    );
+
+    const data = await response.json();
+
+    const coins = [
+      ["BTC","Bitcoin","bitcoin","₿"],
+      ["ETH","Ethereum","ethereum","Ξ"],
+      ["BNB","BNB","binancecoin","◆"],
+      ["PENGUIN","PENGUIN",null,"🐧"],
+      ["SOL","Solana","solana","◎"],
+      ["XRP","XRP","ripple","✕"],
+      ["DOGE","Dogecoin","dogecoin","Ð"],
+      ["ADA","Cardano","cardano","₳"],
+      ["TRX","TRON","tron","◆"],
+      ["AVAX","Avalanche","avalanche-2","🔺"]
+    ];
+
+    const list = document.getElementById("cryptoList");
+
+    list.innerHTML = coins.map((coin,index) => {
+      const symbol = coin[0];
+      const name = coin[1];
+      const apiId = coin[2];
+      const icon = coin[3];
+
+      const price = symbol === "PENGUIN"
+        ? 0.011
+        : Number(data[apiId]?.usd || 0);
+
+      return `
+        <div style="
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          padding:15px 4px;
+          border-bottom:${index === coins.length-1 ? "none" : "1px solid rgba(255,255,255,0.08)"};
+        ">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:25px;width:30px;text-align:center;">
+              ${icon}
+            </div>
+
+            <div>
+              <div style="font-weight:700;">
+                ${symbol}
+              </div>
+              <div class="small">
+                ${name}
+              </div>
+            </div>
+          </div>
+
+          <div style="font-weight:700;">
+            ${price.toLocaleString("en-US",{
+              minimumFractionDigits: symbol === "PENGUIN" ? 6 : 2,
+              maximumFractionDigits: symbol === "PENGUIN" ? 6 : 6
+            })}
+          </div>
+        </div>
+      `;
+    }).join("");
+
+  }catch(error){
+    document.getElementById("cryptoList").innerHTML = `
+      <div style="text-align:center;padding:20px;">
+        Unable to load prices.
+      </div>
+    `;
+
+    console.log("Crypto prices error:",error);
+  }
+}
+
 function showProfile(){
 currentPage = "profile";
 
@@ -1661,6 +1759,11 @@ ${t("miners")}
 
 </button>
 
+
+<button onclick="showCrypto()">
+<span>₿</span>
+Crypto
+</button>
 
 <button onclick="showProfile()">
 
