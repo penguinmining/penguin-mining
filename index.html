@@ -242,6 +242,8 @@ localStorage.getItem("telegramReward") === "true";
 let activeVip =
 parseInt(localStorage.getItem("activeVip")) || 0;
 
+let activeDevices = [];
+
 let pendingOrder =
 JSON.parse(
 localStorage.getItem("pendingOrder") || "null"
@@ -288,6 +290,20 @@ p => p.id === activeVip
 
 
 function getRate(){
+
+if(Array.isArray(activeDevices) && activeDevices.length > 0){
+
+return activeDevices.reduce((total, device) => {
+
+const pkg = VIP_PACKAGES.find(p => p.id === Number(device.vip_id));
+
+const quantity = Number(device.quantity || 0);
+
+return total + (pkg ? pkg.rate * quantity : 0);
+
+}, 0);
+
+}
 
 const pkg = getActivePackage();
 
@@ -548,6 +564,30 @@ showTasks();
 }
 
 
+function getDeviceQuantity(vipId){
+
+const device = activeDevices.find(d => Number(d.vip_id) === Number(vipId));
+
+return device ? Number(device.quantity || 0) : 0;
+
+}
+
+function getTotalDeviceCount(){
+
+return activeDevices.reduce((total, device) => {
+
+return total + Number(device.quantity || 0);
+
+}, 0);
+
+}
+
+function getTotalMiningRate(){
+
+return getRate();
+
+}
+
 function showMiners(){
 
 let html = `
@@ -572,10 +612,65 @@ Upgrade your mining power
 
 `;
 
+
+if(activeDevices.length > 0){
+
+html += '<div class="card">';
+
+html += '<h3>⚡ Aktif Mining Cihazlarım</h3>';
+
+html += '<div class="small">';
+html += 'Toplam cihaz: ';
+html += '<strong>' + getTotalDeviceCount() + ' ADET</strong>';
+html += '</div>';
+
+html += '<div class="small">';
+html += 'Toplam mining hızı: ';
+html += '<strong>' + getTotalMiningRate().toFixed(6) + ' PENGUIN / sec</strong>';
+html += '</div>';
+
+html += '<div style="margin-top:12px;">';
+
+activeDevices.forEach(device => {
+
+const pkg = VIP_PACKAGES.find(p => p.id === Number(device.vip_id));
+
+if(!pkg) return;
+
+const quantity = Number(device.quantity || 0);
+
+html += '<div style="padding:10px 0;border-top:1px solid rgba(255,255,255,.08);">';
+
+html += '<div>';
+html += '<strong>' + pkg.name + '</strong>';
+html += '<span style="float:right;">';
+html += quantity + ' ADET';
+html += '</span>';
+html += '</div>';
+
+html += '<div class="small">';
+html += 'Cihaz başı: ';
+html += pkg.rate + ' PENGUIN / sec';
+html += '</div>';
+
+html += '<div class="small">';
+html += 'Toplam katkı: ';
+html += (pkg.rate * quantity).toFixed(6) + ' PENGUIN / sec';
+html += '</div>';
+
+html += '</div>';
+
+});
+
+html += '</div>';
+html += '</div>';
+
+}
+
 VIP_PACKAGES.forEach(pkg => {
 
-const active =
-activeVip === pkg.id;
+const quantity = getDeviceQuantity(pkg.id);
+const active = quantity > 0;
 
 html += `
 
@@ -602,10 +697,10 @@ Multiplier:
 
 <button
 onclick="buyPackage(${pkg.id})"
-${active ? "disabled" : ""}
+
 >
 
-${active ? "ACTIVE" : "BUY"}
+${active ? "ACTIVE • " + quantity + " ADET" : "BUY"}
 
 </button>
 
@@ -1243,6 +1338,7 @@ const data = await response.json();
 
 if(data.ok && data.user){
 activeVip = Number(data.user.active_vip || 0);
+activeDevices = Array.isArray(data.devices) ? data.devices : [];
 saveData();
 }
 
