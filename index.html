@@ -1224,7 +1224,7 @@ if(!telegramUserId) return;
 
 try{
 
-await fetch(
+const response = await fetch(
 "https://penguin-api.scorpincoin.workers.dev/user",
 {
 method:"POST",
@@ -1238,6 +1238,13 @@ first_name:telegramUser?.first_name || null
 })
 }
 );
+
+const data = await response.json();
+
+if(data.ok && data.user){
+activeVip = Number(data.user.active_vip || 0);
+saveData();
+}
 
 }catch(error){
 
