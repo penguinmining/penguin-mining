@@ -306,6 +306,7 @@ let activeVip =
 parseInt(localStorage.getItem("activeVip")) || 0;
 
 let activeDevices = [];
+let referralCount = 0;
 
 let pendingOrder =
 JSON.parse(
@@ -1359,6 +1360,10 @@ ${code}
 Copy Referral Link
 </button>
 
+<div class="info">
+👥 Referanslarım: ${referralCount}
+</div>
+
 </div>
 
 </div>
@@ -1587,6 +1592,13 @@ const data = await response.json();
 if(data.ok && data.user){
 activeVip = Number(data.user.active_vip || 0);
 activeDevices = Array.isArray(data.devices) ? data.devices : [];
+
+if(data.user.referral_code){
+localStorage.setItem("referralCode", data.user.referral_code);
+}
+
+referralCount = Number(data.referral_count || 0);
+
 saveData();
 }
 
