@@ -317,15 +317,42 @@ let selectedPackage = null;
 
 let currentLanguage =
 localStorage.getItem("penguinLanguage") || "tr";
+let currentPage = "mine";
 
 function setLanguage(language){
 currentLanguage = language;
 localStorage.setItem("penguinLanguage", language);
+
+if(currentPage === "tasks" && typeof showTasks === "function"){
+  showTasks();
+}else if(currentPage === "miners" && typeof showMiners === "function"){
+  showMiners();
+}else if(currentPage === "profile" && typeof showProfile === "function"){
+  showProfile();
+}else if(typeof showMine === "function"){
+  showMine();
+}
 }
 
 const translations = {
 
 tr:{
+minersSubtitle:"Madencilik gücünü yükselt",
+activeMiningDevices:"⚡ Aktif Mining Cihazlarım",
+totalDevices:"Toplam cihaz:",
+totalMiningRate:"Toplam mining hızı:",
+deviceEach:"Cihaz başı:",
+totalContribution:"Toplam katkı:",
+price:"Fiyat:",
+mining:"Kazım:",
+multiplier:"Çarpan:",
+active:"AKTİF",
+buy:"SATIN AL",
+package:"Paket:",
+txid:"TXID:",
+orderReceived:"Siparişiniz alındı.",
+paymentChecking:"Ödeme kontrol ediliyor.",
+vipNotActive:"VIP will not activate until approval.",
 mine:"Kazım",
 tasks:"Görevler",
 miners:"Madenciler",
@@ -348,10 +375,28 @@ pendingOrder:"Bekleyen Sipariş",
 withdraw:"Çekim",
 requestWithdrawal:"Çekim Talebi Gönder",
 minimumWithdrawal:"Minimum çekim",
-copyReferral:"Referans Linkini Kopyala"
+copyReferral:"Referans Linkini Kopyala",
+    mineSubtitle:"Her saniye PENGUIN kaz",
+    joinTelegramInfo:"Telegram kanalımıza katıl ve ödülünü al.",packagePrice:"Paket Fiyatı",sendExactly:"Tam olarak",toAddress:"aşağıdaki adrese gönderin.",enterTxid:"İşlem TXID'sini girin",adminApproval:"Admin tarafından onaylanmadan VIP aktifleşmez.",profileSubtitle:"PENGUIN hesabınız",withdrawalInfo:"BEP20 cüzdan adresinizi ve çekim miktarını girin.",walletAddress:"BEP20 cüzdan adresi",amountMin:"Miktar (Min. 15.000 PENGUIN)",addressCopied:"BNB adresi kopyalandı!",packageNotSelected:"Paket seçilmedi.",enterTxidAlert:"Lütfen TXID girin.",noAddress:"Lütfen BEP20 cüzdan adresinizi girin.",noAmount:"Lütfen çekim miktarını girin.",minWithdrawAlert:"Minimum çekim miktarı 15.000 PENGUIN.",insufficientBalance:"Yetersiz PENGUIN bakiyesi.",withdrawalReceived:"Çekim talebiniz alındı.",referralCopied:"Referans linki kopyalandı!"
 },
 
 en:{
+minersSubtitle:"Upgrade your mining power",
+activeMiningDevices:"⚡ Active Mining Devices",
+totalDevices:"Total devices:",
+totalMiningRate:"Total mining rate:",
+deviceEach:"Per device:",
+totalContribution:"Total contribution:",
+price:"Price:",
+mining:"Mining:",
+multiplier:"Multiplier:",
+active:"ACTIVE",
+buy:"BUY",
+package:"Package:",
+txid:"TXID:",
+orderReceived:"Your order has been received.",
+paymentChecking:"Payment is being checked.",
+vipNotActive:"VIP will not activate until approval.",
 mine:"Mine",
 tasks:"Tasks",
 miners:"Miners",
@@ -374,10 +419,28 @@ pendingOrder:"Pending Order",
 withdraw:"Withdraw",
 requestWithdrawal:"Request Withdrawal",
 minimumWithdrawal:"Minimum withdrawal",
-copyReferral:"Copy Referral Link"
+copyReferral:"Copy Referral Link",
+    mineSubtitle:"Mine PENGUIN every second",
+    joinTelegramInfo:"Join our Telegram channel and claim your reward.",packagePrice:"Package Price",sendExactly:"Send exactly",toAddress:"to the address below.",enterTxid:"Enter transaction TXID",adminApproval:"VIP will not activate until admin approval.",profileSubtitle:"Your PENGUIN account",withdrawalInfo:"Enter your BEP20 wallet address and withdrawal amount.",walletAddress:"BEP20 wallet address",amountMin:"Amount (Min. 15,000 PENGUIN)",addressCopied:"BNB address copied!",packageNotSelected:"Package not selected.",enterTxidAlert:"Please enter TXID.",noAddress:"Please enter your BEP20 wallet address.",noAmount:"Please enter the withdrawal amount.",minWithdrawAlert:"Minimum withdrawal is 15,000 PENGUIN.",insufficientBalance:"Insufficient PENGUIN balance.",withdrawalReceived:"Your withdrawal request was received.",referralCopied:"Referral link copied!"
 },
 
 ru:{
+minersSubtitle:"Увеличьте мощность майнинга",
+activeMiningDevices:"⚡ Активные устройства майнинга",
+totalDevices:"Всего устройств:",
+totalMiningRate:"Общая скорость майнинга:",
+deviceEach:"На устройство:",
+totalContribution:"Общий вклад:",
+price:"Цена:",
+mining:"Майнинг:",
+multiplier:"Множитель:",
+active:"АКТИВЕН",
+buy:"КУПИТЬ",
+package:"Пакет:",
+txid:"TXID:",
+orderReceived:"Ваш заказ получен.",
+paymentChecking:"Проверка оплаты.",
+vipNotActive:"VIP не активируется до подтверждения.",
 mine:"Майнинг",
 tasks:"Задания",
 miners:"Майнеры",
@@ -400,10 +463,28 @@ pendingOrder:"Ожидающий заказ",
 withdraw:"Вывод",
 requestWithdrawal:"Запросить вывод",
 minimumWithdrawal:"Минимальный вывод",
-copyReferral:"Скопировать реферальную ссылку"
+copyReferral:"Скопировать реферальную ссылку",
+    mineSubtitle:"Добывайте PENGUIN каждую секунду",
+    joinTelegramInfo:"Присоединяйтесь к нашему Telegram-каналу и получите награду.",packagePrice:"Цена пакета",sendExactly:"Отправьте ровно",toAddress:"на адрес ниже.",enterTxid:"Введите TXID транзакции",adminApproval:"VIP не активируется до одобрения администратора.",profileSubtitle:"Ваш аккаунт PENGUIN",withdrawalInfo:"Введите адрес BEP20 и сумму вывода.",walletAddress:"Адрес BEP20",amountMin:"Сумма (мин. 15 000 PENGUIN)",addressCopied:"Адрес BNB скопирован!",packageNotSelected:"Пакет не выбран.",enterTxidAlert:"Пожалуйста, введите TXID.",noAddress:"Введите адрес BEP20.",noAmount:"Введите сумму вывода.",minWithdrawAlert:"Минимальная сумма вывода — 15 000 PENGUIN.",insufficientBalance:"Недостаточно PENGUIN.",withdrawalReceived:"Запрос на вывод получен.",referralCopied:"Реферальная ссылка скопирована!"
 },
 
 es:{
+minersSubtitle:"Mejora tu potencia de minería",
+activeMiningDevices:"⚡ Dispositivos de minería activos",
+totalDevices:"Dispositivos totales:",
+totalMiningRate:"Velocidad total de minería:",
+deviceEach:"Por dispositivo:",
+totalContribution:"Contribución total:",
+price:"Precio:",
+mining:"Minería:",
+multiplier:"Multiplicador:",
+active:"ACTIVO",
+buy:"COMPRAR",
+package:"Paquete:",
+txid:"TXID:",
+orderReceived:"Tu pedido ha sido recibido.",
+paymentChecking:"Se está comprobando el pago.",
+vipNotActive:"VIP no se activará hasta la aprobación.",
 mine:"Minería",
 tasks:"Tareas",
 miners:"Mineros",
@@ -426,10 +507,28 @@ pendingOrder:"Pedido pendiente",
 withdraw:"Retirar",
 requestWithdrawal:"Solicitar retiro",
 minimumWithdrawal:"Retiro mínimo",
-copyReferral:"Copiar enlace de referido"
+copyReferral:"Copiar enlace de referido",
+    mineSubtitle:"Mina PENGUIN cada segundo",
+    joinTelegramInfo:"Únete a nuestro canal de Telegram y reclama tu recompensa.",packagePrice:"Precio del paquete",sendExactly:"Envía exactamente",toAddress:"a la dirección indicada.",enterTxid:"Introduce el TXID de la transacción",adminApproval:"VIP no se activará hasta la aprobación del administrador.",profileSubtitle:"Tu cuenta PENGUIN",withdrawalInfo:"Introduce tu dirección BEP20 y el importe a retirar.",walletAddress:"Dirección BEP20",amountMin:"Importe (mín. 15.000 PENGUIN)",addressCopied:"¡Dirección BNB copiada!",packageNotSelected:"Paquete no seleccionado.",enterTxidAlert:"Introduce el TXID.",noAddress:"Introduce tu dirección BEP20.",noAmount:"Introduce el importe de retiro.",minWithdrawAlert:"El retiro mínimo es de 15.000 PENGUIN.",insufficientBalance:"Saldo PENGUIN insuficiente.",withdrawalReceived:"Tu solicitud de retiro ha sido recibida.",referralCopied:"¡Enlace de referido copiado!"
 },
 
 zh:{
+minersSubtitle:"提升你的挖矿能力",
+activeMiningDevices:"⚡ 活跃挖矿设备",
+totalDevices:"设备总数：",
+totalMiningRate:"总挖矿速度：",
+deviceEach:"单台设备：",
+totalContribution:"总贡献：",
+price:"价格：",
+mining:"挖矿：",
+multiplier:"倍率：",
+active:"已激活",
+buy:"购买",
+package:"套餐：",
+txid:"TXID：",
+orderReceived:"您的订单已收到。",
+paymentChecking:"正在检查付款。",
+vipNotActive:"确认前 VIP 不会激活。",
 mine:"挖矿",
 tasks:"任务",
 miners:"矿机",
@@ -452,10 +551,28 @@ pendingOrder:"待处理订单",
 withdraw:"提现",
 requestWithdrawal:"提交提现申请",
 minimumWithdrawal:"最低提现",
-copyReferral:"复制邀请链接"
+copyReferral:"复制邀请链接",
+    mineSubtitle:"每秒挖取 PENGUIN",
+    joinTelegramInfo:"加入我们的 Telegram 频道并领取奖励。",packagePrice:"套餐价格",sendExactly:"请准确发送",toAddress:"到以下地址。",enterTxid:"输入交易 TXID",adminApproval:"管理员批准后 VIP 才会激活。",profileSubtitle:"您的 PENGUIN 账户",withdrawalInfo:"请输入您的 BEP20 钱包地址和提现金额。",walletAddress:"BEP20 钱包地址",amountMin:"金额（最低 15,000 PENGUIN）",addressCopied:"BNB 地址已复制！",packageNotSelected:"未选择套餐。",enterTxidAlert:"请输入 TXID。",noAddress:"请输入 BEP20 钱包地址。",noAmount:"请输入提现金额。",minWithdrawAlert:"最低提现金额为 15,000 PENGUIN。",insufficientBalance:"PENGUIN 余额不足。",withdrawalReceived:"提现申请已提交。",referralCopied:"推荐链接已复制！"
 },
 
 de:{
+minersSubtitle:"Verbessere deine Mining-Leistung",
+activeMiningDevices:"⚡ Aktive Mining-Geräte",
+totalDevices:"Geräte insgesamt:",
+totalMiningRate:"Gesamte Mining-Rate:",
+deviceEach:"Pro Gerät:",
+totalContribution:"Gesamtbeitrag:",
+price:"Preis:",
+mining:"Mining:",
+multiplier:"Multiplikator:",
+active:"AKTIV",
+buy:"KAUFEN",
+package:"Paket:",
+txid:"TXID:",
+orderReceived:"Deine Bestellung wurde erhalten.",
+paymentChecking:"Zahlung wird geprüft.",
+vipNotActive:"VIP wird erst nach der Bestätigung aktiviert.",
 mine:"Mining",
 tasks:"Aufgaben",
 miners:"Miner",
@@ -478,7 +595,9 @@ pendingOrder:"Ausstehende Bestellung",
 withdraw:"Auszahlung",
 requestWithdrawal:"Auszahlung anfordern",
 minimumWithdrawal:"Mindestauszahlung",
-copyReferral:"Empfehlungslink kopieren"
+copyReferral:"Empfehlungslink kopieren",
+    mineSubtitle:"Mine PENGUIN jede Sekunde",
+    joinTelegramInfo:"Tritt unserem Telegram-Kanal bei und erhalte deine Belohnung.",packagePrice:"Paketpreis",sendExactly:"Sende genau",toAddress:"an die folgende Adresse.",enterTxid:"Transaktions-TXID eingeben",adminApproval:"VIP wird erst nach der Admin-Genehmigung aktiviert.",profileSubtitle:"Dein PENGUIN-Konto",withdrawalInfo:"Gib deine BEP20-Wallet-Adresse und den Auszahlungsbetrag ein.",walletAddress:"BEP20-Wallet-Adresse",amountMin:"Betrag (Min. 15.000 PENGUIN)",addressCopied:"BNB-Adresse kopiert!",packageNotSelected:"Kein Paket ausgewählt.",enterTxidAlert:"Bitte TXID eingeben.",noAddress:"Bitte BEP20-Wallet-Adresse eingeben.",noAmount:"Bitte Auszahlungsbetrag eingeben.",minWithdrawAlert:"Mindestauszahlung: 15.000 PENGUIN.",insufficientBalance:"Nicht genügend PENGUIN-Guthaben.",withdrawalReceived:"Deine Auszahlungsanfrage wurde erhalten.",referralCopied:"Referral-Link kopiert!"
 }
 
 };
@@ -646,6 +765,7 @@ alert(
 
 
 function showMine(){
+currentPage = "mine";
 
 updateMining();
 
@@ -664,7 +784,7 @@ PENGUIN Mining
 </h1>
 
 <div class="subtitle">
-Mine PENGUIN every second
+${t('mineSubtitle')}
 </div>
 
 </div>
@@ -673,7 +793,7 @@ Mine PENGUIN every second
 <div class="card">
 
 <div class="section-title">
-⛏️ Mining Balance
+${t('miningBalance')}
 </div>
 
 <div class="balance" id="miningBalance">
@@ -681,7 +801,7 @@ ${mined.toFixed(6)}
 </div>
 
 <div class="small">
-Mining rate:
+${t('miningRate')}:
 ${getRate()} PENGUIN / sec
 </div>
 
@@ -703,7 +823,7 @@ Claim Mining
 <div class="card">
 
 <div class="section-title">
-💰 Wallet Balance
+${t('walletBalance')}
 </div>
 
 <div class="balance">
@@ -712,6 +832,9 @@ ${wallet.toFixed(6)}
 
 <div class="coin">
 PENGUIN
+</div>
+<div class="small" style="margin-top:6px;">
+≈ \${(wallet * 0.011).toFixed(6)} USDT
 </div>
 
 </div>
@@ -724,6 +847,7 @@ PENGUIN
 
 
 function showTasks(){
+currentPage = "tasks";
 
 document.getElementById("app").innerHTML = `
 
@@ -736,11 +860,11 @@ document.getElementById("app").innerHTML = `
 </div>
 
 <h1>
-Tasks
+${t('tasks')}
 </h1>
 
 <div class="subtitle">
-Complete tasks and earn PENGUIN
+${t('completeTasks')}
 </div>
 
 </div>
@@ -749,22 +873,21 @@ Complete tasks and earn PENGUIN
 <div class="card">
 
 <h3>
-Join Penguin Mining
+${t('joinTelegram')}
 </h3>
 
 <div class="info">
 
-Join our Telegram channel
-and claim your reward.
+${t('joinTelegramInfo')}
 
 </div>
 
 <button onclick="openTelegram()">
-Open Telegram
+${t('openTelegram')}
 </button>
 
 <button onclick="claimTelegramReward()">
-Claim 100 PENGUIN
+${t('claimReward')}
 </button>
 
 </div>
@@ -838,6 +961,7 @@ return getRate();
 }
 
 function showMiners(){
+currentPage = "miners";
 
 let html = `
 
@@ -850,11 +974,11 @@ let html = `
 </div>
 
 <h1>
-Miners
+${t('miners')}
 </h1>
 
 <div class="subtitle">
-Upgrade your mining power
+${t('minersSubtitle')}
 </div>
 
 </div>
@@ -866,15 +990,15 @@ if(activeDevices.length > 0){
 
 html += '<div class="card">';
 
-html += '<h3>⚡ Aktif Mining Cihazlarım</h3>';
+html += `<h3>${t('activeMiningDevices')}</h3>`;
 
 html += '<div class="small">';
-html += 'Toplam cihaz: ';
+html += t('totalDevices') + ' ';
 html += '<strong>' + getTotalDeviceCount() + ' ADET</strong>';
 html += '</div>';
 
 html += '<div class="small">';
-html += 'Toplam mining hızı: ';
+html += t('totalMiningRate') + ' ';
 html += '<strong>' + getTotalMiningRate().toFixed(6) + ' PENGUIN / sec</strong>';
 html += '</div>';
 
@@ -898,12 +1022,12 @@ html += '</span>';
 html += '</div>';
 
 html += '<div class="small">';
-html += 'Cihaz başı: ';
+html += t('deviceEach') + ' ';
 html += pkg.rate + ' PENGUIN / sec';
 html += '</div>';
 
 html += '<div class="small">';
-html += 'Toplam katkı: ';
+html += t('totalContribution') + ' ';
 html += (pkg.rate * quantity).toFixed(6) + ' PENGUIN / sec';
 html += '</div>';
 
@@ -930,17 +1054,17 @@ ${pkg.name}
 </h3>
 
 <div>
-Price:
+${t('price')}
 <strong>${pkg.price} BNB</strong>
 </div>
 
 <div class="small">
-Mining:
+${t('mining')}
 ${pkg.rate} PENGUIN / sec
 </div>
 
 <div class="small">
-Multiplier:
+${t('multiplier')}
 ×${pkg.multiplier}
 </div>
 
@@ -949,7 +1073,7 @@ onclick="buyPackage(${pkg.id})"
 
 >
 
-${active ? "ACTIVE • " + quantity + " ADET" : "BUY"}
+${active ? t('active') + " • " + quantity + " ADET" : t('buy')}
 
 </button>
 
@@ -967,29 +1091,29 @@ html += `
 <div class="card">
 
 <h3>
-⏳ Pending Order
+⏳ ${t('pendingOrder')}
 </h3>
 
 <div>
-Package:
+${t('package')}
 ${pendingOrder.name}
 </div>
 
 <div>
-Price:
+${t('price')}
 ${pendingOrder.price} BNB
 </div>
 
 <div class="small">
-TXID:
+${t('txid')}
 ${pendingOrder.txid}
 </div>
 
 <div class="info">
 
-Siparişiniz alındı.<br>
-Ödeme kontrol ediliyor.<br>
-Onaylanmadan VIP aktifleşmez.
+${t('orderReceived')}<br>
+${t('paymentChecking')}<br>
+${t('vipNotActive')}
 
 </div>
 
@@ -1058,9 +1182,9 @@ ${selectedPackage.price} BNB
 
 <div class="info">
 
-Send exactly
+${t("sendExactly")}
 ${selectedPackage.price} BNB
-to the address below.
+${t("toAddress")}
 
 </div>
 
@@ -1071,21 +1195,21 @@ ${PAYMENT_ADDRESS}
 </div>
 
 <button onclick="copyPaymentAddress()">
-Copy BNB Address
+${t("copyAddress")}
 </button>
 
 <input
 id="txid"
 type="text"
-placeholder="Enter transaction TXID"
+placeholder="${t("enterTxid")}"
 />
 
 <button onclick="submitOrder()">
-Submit Purchase
+${t("submitPurchase")}
 </button>
 
 <button onclick="showMiners()">
-Back to Miners
+${t("backToMiners")}
 </button>
 
 </div>
@@ -1224,7 +1348,7 @@ Siparişiniz alındı
 
 <div class="info">
 
-Ödeme kontrol ediliyor.<br><br>
+${t('paymentChecking')}<br><br>
 
 Admin tarafından onaylanmadan
 VIP aktifleşmez.
@@ -1232,7 +1356,7 @@ VIP aktifleşmez.
 </div>
 
 <button onclick="showMiners()">
-Back to Miners
+${t("backToMiners")}
 </button>
 
 </div>
@@ -1245,6 +1369,7 @@ Back to Miners
 
 
 function showProfile(){
+currentPage = "profile";
 
 const code =
 generateReferral();
@@ -1264,11 +1389,11 @@ document.getElementById("app").innerHTML = `
 </div>
 
 <h1>
-Profile
+${t("profile")}
 </h1>
 
 <div class="subtitle">
-Your PENGUIN account
+${t("profileSubtitle")}
 </div>
 
 </div>
@@ -1277,7 +1402,7 @@ Your PENGUIN account
 <div class="card">
 
 <div class="section-title">
-💰 Wallet Balance
+💰 ${t("walletBalance")}
 </div>
 
 <div class="balance">
@@ -1294,12 +1419,12 @@ PENGUIN
 <div class="card">
 
 <div class="section-title">
-💸 Withdraw
+💸 ${t("withdraw")}
 </div>
 
 <div class="withdraw-limit">
 
-Minimum çekim:
+${t("minimumWithdrawal")}:
 
 <strong>
 15,000 PENGUIN
@@ -1309,8 +1434,7 @@ Minimum çekim:
 
 <div class="info">
 
-Enter your BEP20 wallet address
-and withdrawal amount.
+${t("withdrawalInfo")}
 
 </div>
 
@@ -1318,25 +1442,35 @@ and withdrawal amount.
 <input
 id="withdrawAddress"
 type="text"
-placeholder="BEP20 wallet address"
+placeholder="${t("walletAddress")}"
 />
 
 
+<div class="small" style="margin-bottom:8px;">Çekim Türü</div>
+<select id="withdrawType" style="width:100%;padding:12px;border-radius:10px;margin-bottom:10px;" onchange="updateWithdrawType()">
+<option value="penguin">🐧 PENGUIN</option>
+<option value="usdt">💵 USDT</option>
+</select>
+
+<div style="display:flex;gap:8px;margin-top:8px;">
 <input
 id="withdrawAmount"
 type="number"
-placeholder="Amount (Min. 15,000 PENGUIN)"
+placeholder="${t("amountMin")}"
 min="15000"
+style="flex:1;"
 />
+<button type="button" onclick="setMaxWithdraw()" style="width:80px;">MAX</button>
+</div>
 
 
 <button onclick="requestWithdraw()">
-Request Withdrawal
+${t("requestWithdrawal")}
 </button>
 
 
 <div class="small">
-Minimum withdrawal: 15,000 PENGUIN
+${t("minimumWithdrawal")}: 15,000 PENGUIN
 </div>
 
 </div>
@@ -1345,11 +1479,11 @@ Minimum withdrawal: 15,000 PENGUIN
 <div class="card">
 
 <div class="section-title">
-🔗 Referral
+🔗 ${t("referral")}
 </div>
 
 <div class="info">
-Your referral code:
+${t("referralCode")}
 </div>
 
 <div class="balance">
@@ -1357,7 +1491,7 @@ ${code}
 </div>
 
 <button onclick="copyReferral()">
-Copy Referral Link
+${t("copyReferral")}
 </button>
 
 <div class="info">
@@ -1373,6 +1507,30 @@ Copy Referral Link
 }
 
 
+function setMaxWithdraw(){
+const type=document.getElementById("withdrawType").value;
+const amount=document.getElementById("withdrawAmount");
+
+if(type==="usdt"){
+amount.value=(wallet*0.011).toFixed(6);
+}else{
+amount.value=wallet.toFixed(6);
+}
+}
+
+function updateWithdrawType(){
+const type=document.getElementById("withdrawType").value;
+const amount=document.getElementById("withdrawAmount");
+
+if(type==="usdt"){
+amount.placeholder="USDT miktarı";
+amount.min=(MIN_WITHDRAW*0.011).toFixed(6);
+}else{
+amount.placeholder="Miktar (Min. 15.000 PENGUIN)";
+amount.min=MIN_WITHDRAW;
+}
+}
+
 function requestWithdraw(){
 
 const address =
@@ -1387,6 +1545,15 @@ document
 .getElementById("withdrawAmount")
 .value
 );
+
+const type =
+document.getElementById("withdrawType").value;
+
+let penguinAmount = amount;
+
+if(type === "usdt"){
+penguinAmount = amount / 0.011;
+}
 
 
 if(!address){
@@ -1411,7 +1578,7 @@ return;
 }
 
 
-if(amount < MIN_WITHDRAW){
+if(penguinAmount < MIN_WITHDRAW){
 
 alert(
 "Minimum çekim miktarı 15,000 PENGUIN."
@@ -1422,7 +1589,7 @@ return;
 }
 
 
-if(amount > wallet){
+if(penguinAmount > wallet){
 
 alert(
 "Yetersiz PENGUIN bakiyesi."
