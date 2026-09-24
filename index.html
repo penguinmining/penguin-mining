@@ -1084,44 +1084,6 @@ ${active ? t('active') + " • " + quantity + " ADET" : t('buy')}
 });
 
 
-if(pendingOrder){
-
-html += `
-
-<div class="card">
-
-<h3>
-⏳ ${t('pendingOrder')}
-</h3>
-
-<div>
-${t('package')}
-${pendingOrder.name}
-</div>
-
-<div>
-${t('price')}
-${pendingOrder.price} BNB
-</div>
-
-<div class="small">
-${t('txid')}
-${pendingOrder.txid}
-</div>
-
-<div class="info">
-
-${t('orderReceived')}<br>
-${t('paymentChecking')}<br>
-${t('vipNotActive')}
-
-</div>
-
-</div>
-
-`;
-
-}
 
 
 html += `
