@@ -322,6 +322,174 @@ currentLanguage = language;
 localStorage.setItem("penguinLanguage", language);
 }
 
+const translations = {
+
+tr:{
+mine:"Kazım",
+tasks:"Görevler",
+miners:"Madenciler",
+profile:"Profil",
+startMining:"Kazımı Başlat",
+stopMining:"Kazımı Durdur",
+claimMining:"Kazımı Topla",
+miningBalance:"Kazım Bakiyesi",
+miningRate:"Kazım hızı",
+walletBalance:"Cüzdan Bakiyesi",
+completeTasks:"Görevleri tamamla ve PENGUIN kazan",
+joinTelegram:"Penguin Mining'e Katıl",
+openTelegram:"Telegram'ı Aç",
+claimReward:"100 PENGUIN Topla",
+paymentRequired:"Ödeme gerekli",
+copyAddress:"BNB Adresini Kopyala",
+submitPurchase:"Satın Alma Talebini Gönder",
+backToMiners:"Madencilere Dön",
+pendingOrder:"Bekleyen Sipariş",
+withdraw:"Çekim",
+requestWithdrawal:"Çekim Talebi Gönder",
+minimumWithdrawal:"Minimum çekim",
+copyReferral:"Referans Linkini Kopyala"
+},
+
+en:{
+mine:"Mine",
+tasks:"Tasks",
+miners:"Miners",
+profile:"Profile",
+startMining:"Start Mining",
+stopMining:"Stop Mining",
+claimMining:"Claim Mining",
+miningBalance:"Mining Balance",
+miningRate:"Mining rate",
+walletBalance:"Wallet Balance",
+completeTasks:"Complete tasks and earn PENGUIN",
+joinTelegram:"Join Penguin Mining",
+openTelegram:"Open Telegram",
+claimReward:"Claim 100 PENGUIN",
+paymentRequired:"Payment required",
+copyAddress:"Copy BNB Address",
+submitPurchase:"Submit Purchase",
+backToMiners:"Back to Miners",
+pendingOrder:"Pending Order",
+withdraw:"Withdraw",
+requestWithdrawal:"Request Withdrawal",
+minimumWithdrawal:"Minimum withdrawal",
+copyReferral:"Copy Referral Link"
+},
+
+ru:{
+mine:"Майнинг",
+tasks:"Задания",
+miners:"Майнеры",
+profile:"Профиль",
+startMining:"Начать майнинг",
+stopMining:"Остановить майнинг",
+claimMining:"Забрать PENGUIN",
+miningBalance:"Баланс майнинга",
+miningRate:"Скорость майнинга",
+walletBalance:"Баланс кошелька",
+completeTasks:"Выполняйте задания и получайте PENGUIN",
+joinTelegram:"Присоединиться к Penguin Mining",
+openTelegram:"Открыть Telegram",
+claimReward:"Получить 100 PENGUIN",
+paymentRequired:"Требуется оплата",
+copyAddress:"Копировать BNB адрес",
+submitPurchase:"Отправить покупку",
+backToMiners:"Назад к майнерам",
+pendingOrder:"Ожидающий заказ",
+withdraw:"Вывод",
+requestWithdrawal:"Запросить вывод",
+minimumWithdrawal:"Минимальный вывод",
+copyReferral:"Скопировать реферальную ссылку"
+},
+
+es:{
+mine:"Minería",
+tasks:"Tareas",
+miners:"Mineros",
+profile:"Perfil",
+startMining:"Iniciar minería",
+stopMining:"Detener minería",
+claimMining:"Reclamar minería",
+miningBalance:"Saldo de minería",
+miningRate:"Velocidad de minería",
+walletBalance:"Saldo de cartera",
+completeTasks:"Completa tareas y gana PENGUIN",
+joinTelegram:"Únete a Penguin Mining",
+openTelegram:"Abrir Telegram",
+claimReward:"Reclamar 100 PENGUIN",
+paymentRequired:"Pago requerido",
+copyAddress:"Copiar dirección BNB",
+submitPurchase:"Enviar compra",
+backToMiners:"Volver a mineros",
+pendingOrder:"Pedido pendiente",
+withdraw:"Retirar",
+requestWithdrawal:"Solicitar retiro",
+minimumWithdrawal:"Retiro mínimo",
+copyReferral:"Copiar enlace de referido"
+},
+
+zh:{
+mine:"挖矿",
+tasks:"任务",
+miners:"矿机",
+profile:"个人资料",
+startMining:"开始挖矿",
+stopMining:"停止挖矿",
+claimMining:"领取挖矿收益",
+miningBalance:"挖矿余额",
+miningRate:"挖矿速度",
+walletBalance:"钱包余额",
+completeTasks:"完成任务并赚取 PENGUIN",
+joinTelegram:"加入 Penguin Mining",
+openTelegram:"打开 Telegram",
+claimReward:"领取 100 PENGUIN",
+paymentRequired:"需要付款",
+copyAddress:"复制 BNB 地址",
+submitPurchase:"提交购买",
+backToMiners:"返回矿机",
+pendingOrder:"待处理订单",
+withdraw:"提现",
+requestWithdrawal:"提交提现申请",
+minimumWithdrawal:"最低提现",
+copyReferral:"复制邀请链接"
+},
+
+de:{
+mine:"Mining",
+tasks:"Aufgaben",
+miners:"Miner",
+profile:"Profil",
+startMining:"Mining starten",
+stopMining:"Mining stoppen",
+claimMining:"Mining auszahlen",
+miningBalance:"Mining-Guthaben",
+miningRate:"Mining-Rate",
+walletBalance:"Wallet-Guthaben",
+completeTasks:"Aufgaben erledigen und PENGUIN verdienen",
+joinTelegram:"Penguin Mining beitreten",
+openTelegram:"Telegram öffnen",
+claimReward:"100 PENGUIN erhalten",
+paymentRequired:"Zahlung erforderlich",
+copyAddress:"BNB-Adresse kopieren",
+submitPurchase:"Kauf senden",
+backToMiners:"Zurück zu Minern",
+pendingOrder:"Ausstehende Bestellung",
+withdraw:"Auszahlung",
+requestWithdrawal:"Auszahlung anfordern",
+minimumWithdrawal:"Mindestauszahlung",
+copyReferral:"Empfehlungslink kopieren"
+}
+
+};
+
+function t(key){
+return (translations[currentLanguage] &&
+translations[currentLanguage][key]) ||
+translations.en[key] ||
+key;
+}
+
+
 function toggleLanguageMenu(){
 const menu = document.getElementById("languageMenu");
 
@@ -1337,7 +1505,7 @@ nav.innerHTML = `
 
 <span>⛏️</span>
 
-Mine
+${t("mine")}
 
 </button>
 
@@ -1346,7 +1514,7 @@ Mine
 
 <span>🎯</span>
 
-Tasks
+${t("tasks")}
 
 </button>
 
@@ -1355,7 +1523,7 @@ Tasks
 
 <span>⚡</span>
 
-Miners
+${t("miners")}
 
 </button>
 
@@ -1364,7 +1532,7 @@ Miners
 
 <span>👤</span>
 
-Profile
+${t("profile")}
 
 </button>
 
