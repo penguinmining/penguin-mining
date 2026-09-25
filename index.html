@@ -1785,7 +1785,7 @@ ${t("copyReferral")}
 </button>
 
 <div class="info">
-👥 Referanslarım: ${referralCount}
+👥 Referanslarım: <span id="profileReferralCount">${referralCount}</span>
 </div>
 
 </div>
@@ -1797,6 +1797,41 @@ ${t("copyReferral")}
 }
 
 
+
+async function refreshProfileReferral(){
+  const el = document.getElementById("profileReferralCount");
+
+  if(!el || !telegramUserId){
+    return;
+  }
+
+  try{
+    const response = await fetch(
+      "https://penguin-api.scorpincoin.workers.dev/user",
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          telegram_id:String(telegramUserId),
+          username:telegramUser?.username || null,
+          first_name:telegramUser?.first_name || null
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if(data.ok){
+      referralCount = Number(data.referral_count || 0);
+      el.textContent = referralCount;
+    }
+  }catch(error){
+    console.log("Profile referans sayısı güncellenemedi:", error);
+  }
+  refreshProfileReferral();
+}
 function setMaxWithdraw(){
 const type=document.getElementById("withdrawType").value;
 const amount=document.getElementById("withdrawAmount");
