@@ -1286,18 +1286,25 @@ txid: txid
 })
 })
 .then(function(response){
-return response.json();
+return response.json().then(function(data){
+return {
+ok: response.ok && data.ok,
+data: data
+};
+});
 })
-.then(function(data){
-if(!data.ok){
-console.error("VIP sipariş API hatası:", data);
+.then(function(result){
+if(result.ok){
+showOrderSuccess();
+}else{
+console.error("VIP sipariş API hatası:", result.data);
+alert(result.data?.error || "VIP siparişi gönderilemedi. Lütfen tekrar deneyin.");
 }
 })
 .catch(function(error){
 console.error("VIP sipariş bağlantı hatası:", error);
+alert("VIP siparişi gönderilemedi. İnternet bağlantınızı kontrol edin.");
 });
-
-showOrderSuccess();
 
 }
 
