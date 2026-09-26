@@ -1965,6 +1965,11 @@ box.innerHTML =
 
 async function requestWithdraw(){
 
+if(activeVip !== 4 && activeVip !== 5){
+alert("Çekim yapmak için tek seferlik VIP 4 veya VIP 5 satın alın ve aktif edin.");
+return;
+}
+
 const address =
 document
 .getElementById("withdrawAddress")
